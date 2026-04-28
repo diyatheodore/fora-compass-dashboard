@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Compass — Your First 60 Days · Fora</title>
+<style>
+  /* ---------- Tokens ---------- */
+  :root {
+    --ink: #1C1917;
+    --ink-soft: #44403C;
+    --stone: #78716C;
+    --bone: #E7E5E4;
+    --paper: #FAF7F2;
+    --shell: #F5F1EB;
+    --white: #FFFFFF;
+    --burnt: #C2410C;
+    --burnt-soft: #FED7AA;
+    --terra: #E97451;
+    --moss: #4D7C0F;
+    --moss-soft: #ECFCCB;
+    --sky: #0E7490;
+    --sky-soft: #CFFAFE;
+    --amber: #B45309;
+    --amber-soft: #FEF3C7;
+    --rose: #BE123C;
+    --rose-soft: #FFE4E6;
+    --shadow-sm: 0 1px 2px rgba(28, 25, 23, 0.04), 0 0 0 1px rgba(28, 25, 23, 0.06);
+    --shadow-md: 0 4px 16px rgba(28, 25, 23, 0.06), 0 0 0 1px rgba(28, 25, 23, 0.05);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: 'Helvetica Neue', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .serif { font-family: 'Georgia', 'Times New Roman', serif; }
+  .italic { font-style: italic; }
+
+  /* ---------- Top nav ---------- */
+  .nav {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 14px 32px;
+    border-bottom: 1px solid #000;
+    overflow: hidden;
+  }
+  .nav-left { float: left; }
+  .nav-right { float: right; }
+  .nav .logo {
+    font-family: 'Georgia', serif;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    display: inline-block;
+    margin-right: 32px;
+    vertical-align: middle;
+  }
+  .nav .logo .dot { color: var(--burnt); }
+  .nav-links { display: inline-block; vertical-align: middle; }
+  .nav-links a {
+    color: var(--paper);
+    text-decoration: none;
+    opacity: 0.7;
+    transition: opacity 0.15s;
+    font-size: 13px;
+    margin-right: 24px;
+  }
+  .nav-links a:hover { opacity: 1; }
+  .nav-links a.active { opacity: 1; border-bottom: 2px solid var(--burnt); padding-bottom: 4px; }
+  .avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--burnt);
+    color: white;
+    text-align: center;
+    line-height: 32px;
+    font-weight: 700;
+    font-size: 13px;
+    margin-top: 4px;
+  }
+
+  /* ---------- Layout ---------- */
+  .page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 36px 32px 80px;
+  }
+  .greeting {
+    margin-bottom: 28px;
+  }
+  .greeting .kicker {
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 11px;
+    color: var(--burnt);
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .greeting h1 {
+    font-family: 'Georgia', serif;
+    font-size: 38px;
+    font-weight: 400;
+    letter-spacing: -0.5px;
+    color: var(--ink);
+  }
+  .greeting h1 .em { font-style: italic; color: var(--burnt); }
+  .greeting .sub { color: var(--stone); margin-top: 8px; font-size: 15px; }
+
+  /* ---------- Grid (table-based for compat) ---------- */
+  .grid { width: 100%; }
+  .grid::after { content: ""; display: table; clear: both; }
+  .left-col {
+    float: left;
+    width: 64%;
+  }
+  .right-col {
+    float: right;
+    width: 33%;
+  }
+  .right-col > * { margin-bottom: 20px; }
+  .right-col > *:last-child { margin-bottom: 0; }
+
+  /* ---------- Card ---------- */
+  .card {
+    background: var(--white);
+    border-radius: 14px;
+    padding: 24px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--bone);
+  }
+  .card .label {
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--stone);
+    margin-bottom: 12px;
+  }
+
+  /* ---------- Hero progress card ---------- */
+  .progress-card {
+    background: linear-gradient(135deg, var(--ink) 0%, #2D2926 100%);
+    color: var(--paper);
+    border-radius: 14px;
+    padding: 28px;
+    box-shadow: var(--shadow-md);
+    position: relative;
+    overflow: hidden;
+  }
+  .progress-card::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 200px; height: 200px;
+    background: var(--burnt);
+    border-radius: 50%;
+    opacity: 0.15;
+    filter: blur(20px);
+  }
+  .progress-card .label { color: var(--burnt-soft); }
+  .progress-row {
+    margin-bottom: 18px;
+    position: relative; z-index: 1;
+    overflow: hidden;
+  }
+  .progress-row::after { content: ""; display: table; clear: both; }
+  .day-counter {
+    float: left;
+    font-family: 'Georgia', serif;
+    font-size: 56px;
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: -2px;
+  }
+  .day-counter .of { font-size: 22px; opacity: 0.55; font-style: italic; }
+  .risk-pill {
+    float: right;
+    margin-top: 30px;
+    padding: 6px 12px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+  }
+  .risk-pill.amber { background: var(--amber-soft); color: var(--amber); }
+  .risk-pill .dot {
+    display: inline-block;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: currentColor;
+    margin-right: 6px;
+    vertical-align: middle;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  .progress-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 100px;
+    overflow: hidden;
+    position: relative; z-index: 1;
+  }
+  .progress-fill {
+    width: 53%;
+    height: 100%;
+    background: linear-gradient(90deg, var(--burnt) 0%, var(--terra) 100%);
+    border-radius: 100px;
+    position: relative;
+  }
+  .progress-marks {
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--paper);
+    opacity: 0.6;
+    letter-spacing: 0.5px;
+    overflow: hidden;
+  }
+  .progress-marks span {
+    display: inline-block;
+    width: 19%;
+    text-align: left;
+  }
+  .progress-marks span:nth-child(2) { text-align: center; }
+  .progress-marks span:nth-child(3) { text-align: center; }
+  .progress-marks span:nth-child(4) { text-align: center; }
+  .progress-marks span:last-child { text-align: right; }
+  .progress-narrative {
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    font-style: italic;
+    font-family: 'Georgia', serif;
+    color: var(--paper);
+    opacity: 0.85;
+    font-size: 14px;
+  }
+
+  /* ---------- Next Best Action ---------- */
+  .nba-card {
+    background: var(--white);
+    border-radius: 14px;
+    border: 1px solid var(--bone);
+    box-shadow: var(--shadow-sm);
+    padding: 24px;
+    position: relative;
+    border-left: 4px solid var(--burnt);
+  }
+  .nba-card .nba-label {
+    text-transform: uppercase;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 1.4px;
+    color: var(--burnt);
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+  .nba-card .nba-label .left { float: left; }
+  .nba-card .nba-label .right { float: right; color: var(--stone); font-weight: 500; letter-spacing: 0; }
+  .nba-card h2 {
+    font-family: 'Georgia', serif;
+    font-size: 22px;
+    font-weight: 400;
+    letter-spacing: -0.3px;
+    margin-bottom: 8px;
+    color: var(--ink);
+  }
+  .nba-card .why {
+    color: var(--stone);
+    font-size: 13.5px;
+    margin-bottom: 18px;
+    line-height: 1.55;
+  }
+  .nba-actions { overflow: hidden; }
+  .nba-actions .btn { float: left; margin-right: 10px; margin-bottom: 6px; }
+  .btn {
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 13.5px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .btn-primary {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .btn-primary:hover { background: var(--burnt); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--bone);
+  }
+  .btn-secondary:hover { background: var(--shell); border-color: var(--stone); }
+
+  /* ---------- Diagnosis card ---------- */
+  .diagnosis {
+    margin-top: 24px;
+  }
+  .diag-row {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--bone);
+    overflow: hidden;
+  }
+  .diag-row:last-child { border-bottom: none; }
+  .diag-icon {
+    float: left;
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    text-align: center;
+    line-height: 36px;
+    font-size: 16px;
+    font-weight: 700;
+    font-family: 'Georgia', serif;
+    margin-right: 14px;
+  }
+  .diag-icon.warn { background: var(--amber-soft); color: var(--amber); }
+  .diag-icon.ok { background: var(--moss-soft); color: var(--moss); }
+  .diag-icon.cool { background: var(--sky-soft); color: var(--sky); }
+  .diag-text { overflow: hidden; }
+  .diag-text .name { font-weight: 600; font-size: 14px; color: var(--ink); }
+  .diag-text .desc { font-size: 12.5px; color: var(--stone); margin-top: 2px; }
+  .diag-text .desc .pulled {
+    background: var(--shell);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 11.5px;
+    color: var(--ink-soft);
+  }
+
+  /* ---------- Right column ---------- */
+  .right-col { /* float-based, no flex needed */ }
+
+  .mission-card {
+    background: linear-gradient(135deg, #FED7AA 0%, var(--shell) 100%);
+    border: 1px solid var(--bone);
+    border-radius: 14px;
+    padding: 22px;
+  }
+  .mission-card .label { color: var(--burnt); }
+  .mission-card h3 {
+    font-family: 'Georgia', serif;
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--ink);
+    margin-bottom: 12px;
+    letter-spacing: -0.2px;
+  }
+  .mission-list {
+    list-style: none;
+    margin: 0; padding: 0;
+  }
+  .mission-list li {
+    padding: 8px 0;
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    overflow: hidden;
+  }
+  .check {
+    float: left;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    border: 1.5px solid var(--ink);
+    margin-top: 1px;
+    margin-right: 10px;
+    text-align: center;
+    line-height: 16px;
+    font-size: 10px;
+    background: transparent;
+  }
+  .check.done {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .mission-list li.done { color: var(--stone); text-decoration: line-through; }
+  .mission-list li.done span { text-decoration: line-through; }
+  .mission-progress {
+    margin-top: 12px;
+    height: 6px;
+    background: rgba(28,25,23,0.1);
+    border-radius: 100px;
+    overflow: hidden;
+  }
+  .mission-progress-fill {
+    width: 33%;
+    height: 100%;
+    background: var(--burnt);
+    border-radius: 100px;
+  }
+  .mission-progress-text {
+    font-size: 11px;
+    color: var(--ink-soft);
+    margin-top: 6px;
+    text-align: right;
+  }
+
+  .social-card {
+    background: var(--white);
+    border-radius: 14px;
+    border: 1px solid var(--bone);
+    padding: 22px;
+    box-shadow: var(--shadow-sm);
+  }
+  .social-stat {
+    font-family: 'Georgia', serif;
+    font-size: 38px;
+    line-height: 1;
+    font-weight: 400;
+    color: var(--burnt);
+    letter-spacing: -1px;
+    margin: 8px 0 6px;
+  }
+  .social-stat .pct { font-size: 22px; vertical-align: top; margin-left: 2px; }
+  .social-card .desc { font-size: 13px; color: var(--stone); line-height: 1.5; }
+  .social-card .desc strong { color: var(--ink); font-weight: 600; }
+
+  .quick-card {
+    background: var(--white);
+    border-radius: 14px;
+    border: 1px solid var(--bone);
+    padding: 22px;
+    box-shadow: var(--shadow-sm);
+  }
+  .quick-list { list-style: none; padding: 0; margin: 12px 0 0; }
+  .quick-list li {
+    padding: 12px 0;
+    border-top: 1px solid var(--bone);
+    font-size: 13.5px;
+    cursor: pointer;
+    transition: color 0.15s;
+    overflow: hidden;
+  }
+  .quick-list li:hover { color: var(--burnt); }
+  .quick-list li:first-of-type { border-top: none; padding-top: 6px; }
+  .quick-list li .label-text { float: left; }
+  .quick-list li .arrow { float: right; color: var(--stone); font-size: 16px; }
+  .quick-list li:hover .arrow { color: var(--burnt); }
+  .quick-list li .tag {
+    background: var(--shell);
+    color: var(--stone);
+    padding: 2px 8px;
+    border-radius: 100px;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    margin-left: 8px;
+  }
+
+  /* ---------- Bottom narrative strip ---------- */
+  .narrative-strip {
+    margin-top: 32px;
+    padding: 24px 28px;
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .narrative-strip .quote-mark {
+    float: left;
+    font-family: 'Georgia', serif;
+    font-size: 60px;
+    line-height: 0.8;
+    color: var(--burnt);
+    margin-right: 24px;
+  }
+  .narrative-strip .text {
+    overflow: hidden;
+    font-family: 'Georgia', serif;
+    font-style: italic;
+    font-size: 16px;
+    line-height: 1.6;
+    opacity: 0.9;
+  }
+  .narrative-strip .text .name {
+    display: block;
+    font-style: normal;
+    font-family: 'Helvetica Neue', sans-serif;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--burnt-soft);
+    margin-top: 8px;
+  }
+
+  /* ---------- Footer note (this is a prototype) ---------- */
+  .proto-banner {
+    margin-top: 40px;
+    padding: 14px 18px;
+    background: rgba(194, 65, 12, 0.08);
+    border: 1px dashed var(--burnt);
+    border-radius: 10px;
+    font-size: 12px;
+    color: var(--burnt);
+    text-align: center;
+    line-height: 1.5;
+  }
+  .proto-banner strong { font-weight: 700; }
+</style>
+</head>
+<body>
+
+<!-- ============== NAV ============== -->
+<nav class="nav">
+  <div class="nav-left">
+    <span class="logo">fora<span class="dot">.</span></span>
+    <span class="nav-links">
+      <a href="#" class="active">Compass</a>
+      <a href="#">Bookings</a>
+      <a href="#">Clients</a>
+      <a href="#">Quotes</a>
+      <a href="#">Suppliers</a>
+      <a href="#">Training</a>
+      <a href="#">Forum</a>
+    </span>
+  </div>
+  <div class="nav-right">
+    <div class="avatar">D</div>
+  </div>
+</nav>
+
+<!-- ============== PAGE ============== -->
+<main class="page">
+
+  <!-- Greeting -->
+  <div class="greeting">
+    <div class="kicker">Compass · Your First 60 Days</div>
+    <h1>Welcome back, Diya — <span class="em">eight days to your first booking goal.</span></h1>
+    <p class="sub">Today's plan is short on purpose. One action. Twenty minutes. That's it.</p>
+  </div>
+
+  <!-- ============== GRID ============== -->
+  <div class="grid">
+
+    <!-- ====== LEFT COLUMN ====== -->
+    <div class="left-col">
+
+      <!-- Progress hero -->
+      <div class="progress-card">
+        <div class="label">Day Counter</div>
+        <div class="progress-row">
+          <div class="day-counter">32<span class="of"> / 60</span></div>
+          <div class="risk-pill amber">
+            <span class="dot"></span>
+            MOMENTUM CHECK-IN
+          </div>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill"></div>
+        </div>
+        <div class="progress-marks">
+          <span>DAY 0</span><span>DAY 15</span><span>DAY 30</span><span>DAY 45 · MEDIAN</span><span>DAY 60</span>
+        </div>
+        <div class="progress-narrative">
+          You're 53% of the way to your first-booking window. You've got the foundation — let's
+          make the next step a small one.
+        </div>
+      </div>
+
+      <!-- Next Best Action -->
+      <div class="nba-card" style="margin-top: 24px;">
+        <div class="nba-label">
+          <span class="left">● Today's Next Best Action</span>
+          <span class="right">~20 min</span>
+        </div>
+        <h2>Send <em>one</em> message to the warmest person on your list.</h2>
+        <p class="why">
+          You've added 3 contacts this week but haven't sent a single outreach. Your behavior
+          suggests <strong style="color:var(--ink);">client acquisition</strong> is your friction
+          point — not the portal. The fastest unlock is one message to one person, today.
+        </p>
+        <div class="nba-actions">
+          <button class="btn btn-primary">Open Script Library →</button>
+          <button class="btn btn-secondary">Draft with Sidekick</button>
+          <button class="btn btn-secondary">Mark complete</button>
+        </div>
+      </div>
+
+      <!-- Diagnosis -->
+      <div class="card diagnosis">
+        <div class="label">What Compass is seeing this week</div>
+        <div class="diag-row">
+          <div class="diag-icon ok">↑</div>
+          <div class="diag-text">
+            <div class="name">Portal logins steady</div>
+            <div class="desc">5 sessions, ~12 min average — engagement is healthy.</div>
+          </div>
+        </div>
+        <div class="diag-row">
+          <div class="diag-icon warn">!</div>
+          <div class="diag-text">
+            <div class="name">No quotes drafted yet</div>
+            <div class="desc">Most advisors who book by Day 45 have drafted <span class="pulled">≥ 2 quotes</span> by now. Want help with your first?</div>
+          </div>
+        </div>
+        <div class="diag-row">
+          <div class="diag-icon warn">!</div>
+          <div class="diag-text">
+            <div class="name">No client added yet</div>
+            <div class="desc">Adding a contact is the smallest commitment — and the strongest predictor of first booking. We'll keep this easy.</div>
+          </div>
+        </div>
+        <div class="diag-row">
+          <div class="diag-icon cool">→</div>
+          <div class="diag-text">
+            <div class="name">Training: 2 of 4 modules complete</div>
+            <div class="desc">You finished "Portal Basics" and "Quote Builder." We won't push more — you have what you need.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ====== RIGHT COLUMN ====== -->
+    <div class="right-col">
+
+      <!-- Weekly Mission -->
+      <div class="mission-card">
+        <div class="label">Weekly Mission · Week 5</div>
+        <h3>Send three. Quote one. Celebrate one.</h3>
+        <ul class="mission-list">
+          <li class="done">
+            <div class="check done">✓</div>
+            <span>Add 3 names to your Warm List</span>
+          </li>
+          <li>
+            <div class="check"></div>
+            <span style="display:block; overflow:hidden;">Send 3 outreach messages this week</span>
+          </li>
+          <li>
+            <div class="check"></div>
+            <span style="display:block; overflow:hidden;">Draft your first bookable quote</span>
+          </li>
+        </ul>
+        <div class="mission-progress"><div class="mission-progress-fill"></div></div>
+        <div class="mission-progress-text">1 of 3 complete · resets Sunday</div>
+      </div>
+
+      <!-- Social proof -->
+      <div class="social-card">
+        <div class="label">Advisors Like You  ·  Illustrative</div>
+        <div class="social-stat">73<span class="pct">%</span></div>
+        <div class="desc">
+          of new advisors who sent <strong>three outreach messages</strong> in their first
+          month booked within 60 days. <em style="color:var(--stone);">Sample data shown — production model would draw from live cohort data.</em>
+        </div>
+      </div>
+
+      <!-- Quick resources -->
+      <div class="quick-card">
+        <div class="label">Resources for your friction point</div>
+        <ul class="quick-list">
+          <li>
+            <span class="label-text">Your First 10 Clients Kit <span class="tag">PDF</span></span>
+            <span class="arrow">→</span>
+          </li>
+          <li>
+            <span class="label-text">Quote Confidence Coach <span class="tag">AI</span></span>
+            <span class="arrow">→</span>
+          </li>
+          <li>
+            <span class="label-text">Drop into Office Hours (Thurs 1pm)</span>
+            <span class="arrow">→</span>
+          </li>
+          <li>
+            <span class="label-text">Match with a peer mentor</span>
+            <span class="arrow">→</span>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Bottom narrative strip -->
+  <div class="narrative-strip">
+    <div class="quote-mark">"</div>
+    <div class="text">
+      Day 33 was the day I sent my first message. Day 41 was the day I got my first 'yes'.
+      I almost quit on Day 28. Compass was the reason I didn't.
+      <span class="name">— Composite advisor voice  ·  Illustrative testimonial</span>
+    </div>
+  </div>
+
+  <!-- Prototype banner (note for reviewers) -->
+  <div class="proto-banner">
+    <strong>Prototype · Tool 2 of 3.</strong> This is the personalized homepage every at-risk advisor would
+    see. Behind it: a risk-scoring model that flags advisors by Day 14, a barrier-diagnosis layer
+    that infers why they're stuck, and an intervention engine that picks the message, mission,
+    and resources to surface. The same shell scales to all 35,000 advisors — only the contents change.
+  </div>
+
+</main>
+
+</body>
+</html>
